@@ -89,8 +89,6 @@ const BlogOverview = ({ blogLists }) => {
     setOpenBlogDialog(true);
   }
 
-  console.log(currentEditedBlogID);
-
   return (
     <div className="min-h-screen flex flex-col gap-10 bg-gradient-to-r from-purple-500 to-blue-600 p-6">
       <AddNewBlog
@@ -110,9 +108,7 @@ const BlogOverview = ({ blogLists }) => {
                 <CardTitle className="mb-5">{blogItem.title}</CardTitle>
                 <CardDescription>{blogItem.description}</CardDescription>
                 <div className="mt-5 flex gap-5 items-center">
-                  <Button onClick={() => handleEdit(blogItem)}>
-                    Edit
-                  </Button>
+                  <Button onClick={() => handleEdit(blogItem)}>Edit</Button>
                   <Button onClick={() => handleDeleteBlogByID(blogItem._id)}>
                     Delete
                   </Button>
