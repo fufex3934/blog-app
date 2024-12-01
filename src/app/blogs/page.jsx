@@ -1,8 +1,23 @@
-import React from 'react'
-import BlogOverview from '../components/blog-overview'
+import React from "react";
+import BlogOverview from "../components/blog-overview";
 
-const Blogs = () => {
-  return <BlogOverview/>
+async function fetchListofBlogs() {
+  try {
+    const apiResponse = await fetch("http://localhost:3000/api/get-blogs", {
+      method: "GET",
+      cache: "no-store",
+    });
+    const result = await apiResponse.json();
+  
+    return result.data;
+  } catch (error) {
+   console.log(error);
+  }
 }
+const Blogs = async () => {
+    const blogLists = await fetchListofBlogs();
 
-export default Blogs
+  return <BlogOverview blogLists={blogLists} />;
+};
+
+export default Blogs;
