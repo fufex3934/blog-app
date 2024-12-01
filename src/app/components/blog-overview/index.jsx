@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { Label } from "@/components/ui/label"
+
 import {
   Card,
   CardContent,
@@ -20,27 +22,25 @@ const BlogOverview = ({ blogLists }) => {
   const [openBlogDialog, setOpenBlogDialog] = useState(false);
   const [blogFormData, setBlogFormData] = useState(initialBlogFormData);
   const [loading, setLoading] = useState(false);
- const router = useRouter()
+  const router = useRouter();
 
- useEffect(() => {
-    router.refresh()
- },[])
-  
+  useEffect(() => {
+    router.refresh();
+  }, []);
+
   async function handleSaveBlogData() {
     try {
       setLoading(true);
-      const apiResponse =
-        await fetch("/api/add-blog", {
-              method: "POST",
-              body: JSON.stringify(blogFormData),
-            });
+      const apiResponse = await fetch("/api/add-blog", {
+        method: "POST",
+        body: JSON.stringify(blogFormData),
+      });
       const result = await apiResponse.json();
       if (result?.success) {
         setBlogFormData(initialBlogFormData);
         setOpenBlogDialog(false);
         setLoading(false);
-       router.refresh()
-       
+        router.refresh();
       }
       console.log(result);
     } catch (error) {
@@ -50,6 +50,23 @@ const BlogOverview = ({ blogLists }) => {
     }
   }
 
+  async function handleDeleteBlogByID(id) {
+    try {
+      setLoading(true);
+      const apiResponse = await fetch(`/api/delete-blog/?id=${id}`, {
+        method: "DELETE",
+      });
+      const result = await apiResponse.json();
+      if (result?.success) {
+        setLoading(false);
+        router.refresh();
+      }
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }
   return (
     <div className="min-h-screen flex flex-col gap-10  p-6">
       <AddNewBlog
@@ -69,15 +86,19 @@ const BlogOverview = ({ blogLists }) => {
                   <CardContent>
                     <CardTitle className="mb-5">{blogItem.title}</CardTitle>
                     <CardDescription>{blogItem.description}</CardDescription>
-                   <div className=" mt-5 flex gap-5 items-center">
-                   <Button>Edit</Button>
-                   <Button>Delete</Button>
-                   </div>
+                    <div className=" mt-5 flex gap-5 items-center">
+                      <Button>Edit</Button>
+                      <Button
+                        onClick={() => handleDeleteBlogByID(blogItem._id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               );
             })
-          : null}
+          : <Label>No Bog Found! Pleasw add one</Label>}
       </div>
     </div>
   );
